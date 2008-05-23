@@ -1,0 +1,15 @@
+<% throw_content :title, "Weather for #{@alert.place.name}" %>
+
+  <div id="body">
+    <h1 class="label"><%= @alert.place.name %></h1>
+    <ul class="rect">
+      <li><%= @alert.message %></li>
+      <%- unless @alert.effective.blank? -%>
+      <li>Effective: <small><%= @alert.effective %></small></li>
+      <%- end -%>
+      <%- unless @alert.expires.blank? -%>
+      <li>Expires: <small><%= @alert.expires %></small></li>
+      <%- end -%>
+    </ul>
+  </div>
+  <!-- <%= @alert.place.inspect %> -->

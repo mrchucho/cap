@@ -1,0 +1,40 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    background-color: #C5CCD3;
+}
+ul li {
+    list-style: none;
+}
+#body {
+    width: 320px;
+    height: 356px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #C5CCD3;
+}
+.label {
+    font-family: Helvetica;
+    font-size: 17px;
+    font-weight: bold;
+    color: #4C566C;
+    padding: 10px 10px 10px 10px;
+    margin: 0px 10px 0px 10px;
+}
+.rect {
+    border: 1px solid #D9D9D9;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    padding: 10px 10px 14px 10px;
+    background-color: white;
+    margin: 0px 10px 17px 10px;
+}
+.rect * {
+    font-family: Helvetica;
+    font-size: 17px;
+    font-weight: bold;
+    font-style: normal;
+}
+.rect small{
+    font-weight: normal;
+}

@@ -1,0 +1,14 @@
+# http://www.useit.com/alertbox/990321.html
+
+/zip/74104
+/z/74104
+/OK/tulsa%20county
+
+
+# Later:
+/areacode/918
+/ac/918
+
+/loc/:lat,:long
+/ll/:lat,:long
+/:lat,:long ? conflicts with /:state/:county ?

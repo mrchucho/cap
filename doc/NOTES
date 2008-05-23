@@ -1,0 +1,9 @@
+* <% throw_content :name, <content or block> %>  ===> <%= catch_content :name %>
+... is equivalenet to <% content_for :name ... %> ===> <%= yield :name %>
+* use "provides :mime_type" + "action.:mime_type.erb|builder|etc."
+* Parts:
+    - Go in: app/parts/
+    - requires dependency "merb-parts"
+    - render w/ <%= part PartControllerName => "action", :args... %>
+* url helper: url(:named_route,*parms), e.g. url(:pages) ==> /pages/index and url(:page, 1) ==> /pages/1
+* In controller you can just do: raise NotFound or raise NotAcceptable
