@@ -12,4 +12,13 @@ class Place
   def timezone=(timezone)
     @timezone = timezone.kind_of?(TZInfo::Timezone) ? timezone : TZInfo::Timezone.get(timezone)
   end
+
+  def Place.dummy_place
+    p = Place.new("Tulsa, OK")
+    p.county = "Tulsa"
+    p.state  = "Oklahoma"
+    p.state_abbreviation = p.state
+    p.timezone = "America/Chicago"
+  end
+ 
 end

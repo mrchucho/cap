@@ -4,7 +4,8 @@ class Alerts < Application
   end
 
   def show(where)
-    @alert = Alert.alerts_for(Places.find_place(where))
-    display @alert
+    @place  = Places.find_place(where)
+    @alerts = Alert.alerts_for(@place)
+    display @place,@alerts
   end
 end

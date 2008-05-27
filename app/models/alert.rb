@@ -22,19 +22,21 @@ class Alert
   # because I think yahoo may give "St. Louis" and "St. Louis County", but NOAA
   # will only have "St. Louis" or "St. Louis City"... ugh, also need to ignore punctuation
   def Alert.alerts_for(place) 
-    alert = Alert.empty_alert_for(place)
+    alerts = []
     doc = Hpricot.parse(open("http://www.weather.gov/alerts/#{place.state_abbreviation.downcase}.cap"))
     doc.search("//cap:info").each do |info|
       # hrm, could I search/loop-thru areadescs, then go back to parent?
       if n(info.search("//cap:area//cap:areadesc/text()").to_s) =~ /#{n(place.county)}/i
         if (event = info.search("//cap:event/text()").to_s) != 'Short Term Forecast'
+          alert           = Alert.empty_alert_for(place)
           alert.event     = event
           alert.effective = fmt(info.search("//cap:effective/text()").to_s,place.timezone,EFFECTIVE_FORMAT)
           alert.expires   = fmt(info.search("//cap:expires/text()").to_s,place.timezone,EXPIRY_FORMAT)
+          alerts << alert
         end
       end
     end
-    alert
+    alerts
   end
 
   def Alert.empty_alert_for(place)
@@ -48,11 +50,13 @@ class Alert
   end
 
   def Alert.dummy_alert
-    @alert = Alert.new(:event => "Severe Thunderstorm Warning",
-                       :directions => "",
-                       :effective => "7:00pm CDT Thursday",
-                       :expires => "Friday at 10:00pm CDT",
-                       :place => Place.new("Tulsa, OK"))
+    Alert.new({
+      :event => "Severe Thunderstorm Warning",
+      :directions => "",
+      :effective => "7:00pm CDT Thursday",
+      :expires => "Friday at 10:00pm CDT",
+      :place => Place.dummy_place
+    })
   end
 private
   def Alert.fmt(timestamp,timezone,fmt)
