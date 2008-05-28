@@ -1,3 +1,5 @@
+class InvalidPlace < StandardError; end
+
 # http://developer.yahoo.com/geo/guide/index.html
 class Places
   # from http://where.yahooapis.com/v1/placetypes
@@ -10,12 +12,11 @@ class Places
   # e.g. if it's a county, we only need state & tz; otherwise find county, THEN state & tz
   def Places.find_place(search_term)
     unless place = Place.place_cache_get(search_term)
-      doc = Hpricot.parse(open("http://where.yahooapis.com/v1/places.q('#{CGI.escape(search_term)}')"))
+      doc = Hpricot.parse(open("http://where.yahooapis.com/v1/places.q('#{search_term}')"))
       if p = doc.search("/places/place")
-        place = Place.new(search_term)
+        place = Place.new(:name => search_term)
         place.county = p.search("//*[@type = 'County']/text()").to_s
         if s = p.search("//*[@type = 'State']")
-          puts s.inspect
           place.state = s.inner_html
           place.state_abbreviation = s.shift[:code]
         end
@@ -46,7 +47,6 @@ private
     doc = Hpricot.parse(open("http://where.yahooapis.com/v1/place/#{woeid}/belongtos.type(#{TZ_CODE})"))
     doc.search("/places/place/placeTypeName[@code = '#{TZ_CODE}']/../name/text()").to_s
   end
-
 
   def Place.place_cache_get(search)
     # exists and hasn't expired

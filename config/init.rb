@@ -7,7 +7,7 @@ Gem.path.unshift(Merb.root / "gems")
 # Merb.push_path(:lib, Merb.root / "lib") # uses **/*.rb as path glob.
 # ==== Dependencies
 dependencies %w(open-uri cgi hpricot tzinfo)
-# dependency "merb-action-args"
+dependency "merb-action-args"
 # dependency "merb-assets"
 # dependency "merb-parts"
 # dependency "merb-assets"

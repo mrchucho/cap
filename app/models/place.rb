@@ -1,8 +1,9 @@
 class Place
   attr_accessor :name,:woeid,:county,:state,:state_abbreviation,:timezone
 
-  def initialize(name)
-    self.name = CGI.unescape(name)
+  def initialize(opts)
+    # remove anything but ^
+    @name = CGI.unescape(opts[:name])
   end
 
   def state_abbreviation=(state)

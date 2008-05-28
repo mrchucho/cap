@@ -22,41 +22,24 @@ class Alert
   # because I think yahoo may give "St. Louis" and "St. Louis County", but NOAA
   # will only have "St. Louis" or "St. Louis City"... ugh, also need to ignore punctuation
   def Alert.alerts_for(place) 
+    raise InvalidPlace.new("Could not determine county for \"#{place.name}\"") if place.county.blank?
     alerts = []
     doc = Hpricot.parse(open("http://www.weather.gov/alerts/#{place.state_abbreviation.downcase}.cap"))
     doc.search("//cap:info").each do |info|
       # hrm, could I search/loop-thru areadescs, then go back to parent?
-      if n(info.search("//cap:area//cap:areadesc/text()").to_s) =~ /#{n(place.county)}/i
+      Merb.logger.debug "Check Alerts against: #{n(info.search("//cap:area//cap:areadesc/text()").to_s)} =~ #{n(place.county)}\s*\(#{n(place.state)}\)"
+      if n(info.search("//cap:area//cap:areadesc/text()").to_s) =~ /#{n(place.county)}\s*\(#{n(place.state)}\)/i
         if (event = info.search("//cap:event/text()").to_s) != 'Short Term Forecast'
-          alert           = Alert.empty_alert_for(place)
-          alert.event     = event
-          alert.effective = fmt(info.search("//cap:effective/text()").to_s,place.timezone,EFFECTIVE_FORMAT)
-          alert.expires   = fmt(info.search("//cap:expires/text()").to_s,place.timezone,EXPIRY_FORMAT)
-          alerts << alert
+          alerts << Alert.new({
+            :place     => place,
+            :event     => event,
+            :effective => fmt(info.search("//cap:effective/text()").to_s,place.timezone,EFFECTIVE_FORMAT),
+            :expires   => fmt(info.search("//cap:expires/text()").to_s,place.timezone,EXPIRY_FORMAT),
+          })
         end
       end
     end
     alerts
-  end
-
-  def Alert.empty_alert_for(place)
-    Alert.new({
-      :place => place,
-      :event => "No alerts at this time",
-      :directions => "No action necessary at this time.",
-      #:effective => "N/A",
-      #:expires => "N/A"
-    })
-  end
-
-  def Alert.dummy_alert
-    Alert.new({
-      :event => "Severe Thunderstorm Warning",
-      :directions => "",
-      :effective => "7:00pm CDT Thursday",
-      :expires => "Friday at 10:00pm CDT",
-      :place => Place.dummy_place
-    })
   end
 private
   def Alert.fmt(timestamp,timezone,fmt)
@@ -65,7 +48,7 @@ private
   end
 
   def Alert.n(string)
-    string.gsub(/\W/,'')
+    string.gsub(/[.,:]/,'')
   end
 end
 =begin
