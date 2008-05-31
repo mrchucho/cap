@@ -17,6 +17,12 @@ class Alert
     "#{event} for #{place.name}"
   end
 
+  def directions
+    # http://www.newson6.com/global/link.asp?L=305755&host=KOTV&padding=200
+    # http://www.weather.gov/glossary/index.php
+    # http://www.srh.noaa.gov/oun/severewx/glossary.php
+  end
+
   #
   # should I make "County" an optional part of the comparison?
   # because I think yahoo may give "St. Louis" and "St. Louis County", but NOAA
@@ -39,9 +45,13 @@ class Alert
         end
       end
     end
-    alerts
+    alerts.empty? ? Alert.no_alerts_for(place) : alerts
   end
 private
+  def Alert.no_alerts_for(place)
+    [Alert.new(:place => place, :event => "No alerts")]
+  end
+
   def Alert.fmt(timestamp,timezone,fmt)
     date,time = timestamp.split('T')
     timezone.strftime(fmt,Time.utc(*(date.split('-')+time.split(':'))))
