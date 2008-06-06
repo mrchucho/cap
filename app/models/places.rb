@@ -8,11 +8,13 @@ class Places
   COUNTY_CODE = 9
   TOWN_CODE   = 7
 
+  APPID = "OSkXnanV34GmWWqcfpA2CsbB18xDtJF6_mfp7Su.HpqXelHWX.ipRGVAe.dw1j8-"
+
   # Could we differentiate based on "<placeTypeName code="7">Town</placeTypeName>" ?
   # e.g. if it's a county, we only need state & tz; otherwise find county, THEN state & tz
   def Places.find_place(search_term)
     unless place = Place.place_cache_get(search_term)
-      doc = Hpricot.parse(open("http://where.yahooapis.com/v1/places.q('#{search_term}')"))
+      doc = Hpricot.parse(open("http://where.yahooapis.com/v1/places.q('#{search_term}')?appid=#{APPID}"))
       if p = doc.search("/places/place")
         place = Place.new(:name => search_term)
         place.county = p.search("//*[@type = 'County']/text()").to_s
@@ -39,12 +41,12 @@ class Places
 private
 
   def Place.go_up(woeid)
-    parent = Hpricot.parse(open("http://where.yahooapis.com/v1/place/#{woeid}/parent"))
+    parent = Hpricot.parse(open("http://where.yahooapis.com/v1/place/#{woeid}/parent?appid=#{APPID}"))
     parent_woeid = parent.search("/place/woeid/text()").to_s
   end
 
   def Place.find_timezone(woeid)
-    doc = Hpricot.parse(open("http://where.yahooapis.com/v1/place/#{woeid}/belongtos.type(#{TZ_CODE})"))
+    doc = Hpricot.parse(open("http://where.yahooapis.com/v1/place/#{woeid}/belongtos.type(#{TZ_CODE})?appid=#{APPID}"))
     doc.search("/places/place/placeTypeName[@code = '#{TZ_CODE}']/../name/text()").to_s
   end
 

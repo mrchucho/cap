@@ -2,6 +2,12 @@ class Alert
   EFFECTIVE_FORMAT = "%I:%M%p %Z %A"
   EXPIRY_FORMAT = "%A at %I:%M%p %Z"
 
+  TORNADO_WARNING = 0
+  WARNING         = 1
+  WATCH           = 2
+  STATEMENT       = 3
+  UNKNOWN         = 99
+
   attr_accessor :event,:directions,:effective,:expires,:place
 
   def initialize(opts)
@@ -15,6 +21,25 @@ class Alert
 
   def message
     "#{event} for #{place.name}"
+  end
+
+  def <=>(alert)
+    self.severity <=> alert.severity
+  end
+
+  def Alert.severity_for(event)
+    case event.to_s
+    when /tornado warning/i
+      TORNADO_WARNING
+    when /warning/i
+      WARNING
+    when /watch/i
+      WATCH
+    when /statement/i
+      STATEMENT
+    else
+      UNKNOWN
+    end
   end
 
   #
