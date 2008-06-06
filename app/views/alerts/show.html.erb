@@ -1,6 +1,6 @@
 <% throw_content :title, "Weather for #{@place.name}" %>
 
-  <div id="body">
+    <small class="sublabel"><%= @place.county %> County</small>
     <h1 class="label"><%= @place.name %></h1>
     <%- @alerts.each do |alert| -%>
     <ul class="rect">
@@ -13,5 +13,4 @@
       <%- end -%>
     </ul>
     <%- end -%>
-  </div>
   <!-- <%= @place.inspect %> -->
