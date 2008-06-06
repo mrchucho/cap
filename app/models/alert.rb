@@ -8,7 +8,7 @@ class Alert
   STATEMENT       = 3
   UNKNOWN         = 99
 
-  attr_accessor :event,:directions,:effective,:expires,:place
+  attr_accessor :event,:directions,:effective,:expires,:place,:severity
 
   def initialize(opts)
     # remove anything but ^
@@ -17,14 +17,21 @@ class Alert
     @effective = opts[:effective]
     @expires = opts[:expires]
     @place = opts[:place]
+    @severity = opts[:severity]
   end
 
   def message
     "#{event} for #{place.name}"
   end
 
+  def directions
+    # http://www.newson6.com/global/link.asp?L=305755&host=KOTV&padding=200
+    # http://www.weather.gov/glossary/index.php
+    # http://www.srh.noaa.gov/oun/severewx/glossary.php
+  end
+
   def <=>(alert)
-    self.severity <=> alert.severity
+    self.severity <=> alert.severity && self.effective <=> alert.effective
   end
 
   def Alert.severity_for(event)
@@ -42,7 +49,6 @@ class Alert
     end
   end
 
-  #
   # should I make "County" an optional part of the comparison?
   # because I think yahoo may give "St. Louis" and "St. Louis County", but NOAA
   # will only have "St. Louis" or "St. Louis City"... ugh, also need to ignore punctuation
@@ -60,13 +66,18 @@ class Alert
             :event     => event,
             :effective => fmt(info.search("//cap:effective/text()").to_s,place.timezone,EFFECTIVE_FORMAT),
             :expires   => fmt(info.search("//cap:expires/text()").to_s,place.timezone,EXPIRY_FORMAT),
+            :severity  => severity_for(event),
           })
         end
       end
     end
-    alerts
+    alerts.empty? ? Alert.no_alerts_for(place) : alerts.sort
   end
 private
+  def Alert.no_alerts_for(place)
+    [Alert.new(:place => place, :event => "No alerts")]
+  end
+
   def Alert.fmt(timestamp,timezone,fmt)
     date,time = timestamp.split('T')
     timezone.strftime(fmt,Time.utc(*(date.split('-')+time.split(':'))))
