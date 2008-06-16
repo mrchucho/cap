@@ -8,7 +8,7 @@ class Places
   COUNTY_CODE = 9
   TOWN_CODE   = 7
 
-  APPID = "OSkXnanV34GmWWqcfpA2CsbB18xDtJF6_mfp7Su.HpqXelHWX.ipRGVAe.dw1j8-"
+  APPID = ""
 
   # Could we differentiate based on "<placeTypeName code="7">Town</placeTypeName>" ?
   # e.g. if it's a county, we only need state & tz; otherwise find county, THEN state & tz
