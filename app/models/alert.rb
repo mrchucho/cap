@@ -49,6 +49,7 @@ class Alert
     end
   end
 
+  #
   # should I make "County" an optional part of the comparison?
   # because I think yahoo may give "St. Louis" and "St. Louis County", but NOAA
   # will only have "St. Louis" or "St. Louis City"... ugh, also need to ignore punctuation
