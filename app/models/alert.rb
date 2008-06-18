@@ -5,7 +5,8 @@ class Alert
   TORNADO_WARNING = 0
   WARNING         = 1
   WATCH           = 2
-  STATEMENT       = 3
+  ADVISORY        = 3
+  STATEMENT       = 4
   UNKNOWN         = 99
 
   attr_accessor :event,:directions,:effective,:expires,:place,:severity
@@ -31,7 +32,11 @@ class Alert
   end
 
   def <=>(alert)
-    self.severity <=> alert.severity && self.effective <=> alert.effective
+    (by_severity = self.severity <=> alert.severity) == 0 ? self.effective <=> alert.effective : by_severity
+  end
+
+  def to_s
+    "Event: #{event}, Effective: #{effective}, Expires: #{expires}, Place: #{place}, Severity: #{severity}"
   end
 
   def Alert.severity_for(event)
@@ -42,6 +47,8 @@ class Alert
       WARNING
     when /watch/i
       WATCH
+    when /advisory/i
+      ADVISORY
     when /statement/i
       STATEMENT
     else
