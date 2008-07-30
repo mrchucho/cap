@@ -14,6 +14,10 @@ dependency "merb-action-args"
 Merb::BootLoader.after_app_loads do
   # Add dependencies here that must load after the application loads:
   # dependency "magic_admin" # this gem uses the app's model classes
+  File.open(Merb.root / "config" / "cap.yml", "r") do |file|
+    opts = YAML.load(file)
+    Places.geo_app_id = opts[:geo_app_id]
+  end
 end
 #
 # ==== Set up your ORM of choice
