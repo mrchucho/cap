@@ -1,6 +1,6 @@
 class Alert
-  EFFECTIVE_FORMAT = "%I:%M%p %Z %A"
-  EXPIRY_FORMAT = "%A at %I:%M%p %Z"
+  EFFECTIVE_FORMAT = "%I:%M%p %Z %a"
+  EXPIRY_FORMAT = "%a at %I:%M%p %Z"
 
   TORNADO_WARNING = 0
   WARNING         = 1
